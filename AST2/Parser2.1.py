@@ -13,10 +13,8 @@ from program import *
 <statement> := <declaration_stmt> |  <assignment_stmt> | <print_stmt>
 <declaration_stmt> := <type> <list_of_variables>
 <list_of_variables> := <identifier> , <list_of_variables> |  <identifier>
-<assignment_stmt> := <expr>
-<expr> := <expr> + <expr> | <expr> - <expr> | <expr> * <expr>| <expr> / <expr>| <identifier> | <constant>
+<assignment_stmt> :=  <identifier> = <identifier>  |  <identifier> = <constant>
 <print_stmt>            :=  print <identifier>
-<type>                     :=  int
 
 '''
 
@@ -75,48 +73,19 @@ class CParser(Parser):
     def list_of_variables(self, value):
         return [value[0]]
 
-    @_('expr')
-    def assignment_stmt(self,value):
-        return value[0]
-    
-    @_('expr "+" expr')
-    def expr(self,value):
-        return value[0]+value[2]
+     @_('ID "=" ID ')
+    def assignment_stmt(self, value):
+        left_variable = self.stable.getSymbolEntry(value[0])
+        right_variable = self.stable.getSymbolEntry(value[2])
+        assignment_ast = AssignAst(NameAst(left_variable), NameAst(right_variable), lineNo=0)
+        return assignment_ast
 
-    @_('expr "-" expr')
-    def expr(self,value):
-        return value[0]-value[2]
-
-    @_('expr "*" expr')
-    def expr(self,value):
-        return value[0]*value[2]
-
-    @_('expr "/" expr')
-    def expr(self,value):
-        return value[0]/value[2]
-    
-    @_('ID')
-    def expr(self, value):
-        return [value[0]]
-    
-    @_('INTEGER')
-    def expr(self,value):
-        return value[0]
-
-
-    # @_('ID "=" ID ')
-    # def assignment_stmt(self, value):
-    #     left_variable = self.stable.getSymbolEntry(value[0])
-    #     right_variable = self.stable.getSymbolEntry(value[2])
-    #     assignment_ast = AssignAst(NameAst(left_variable), NameAst(right_variable), lineNo=0)
-    #     return assignment_ast
-
-    # @_('ID "=" INTEGER')
-    # def assignment_stmt(self, value):
-    #     left_variable = self.stable.getSymbolEntry(value[0])
-    #     value_variable = value[2]
-    #     assignment_ast = AssignAst(NameAst(left_variable), NumberAst(value_variable), lineNo=0)
-    #     return assignment_ast
+    @_('ID "=" INTEGER')
+    def assignment_stmt(self, value):
+        left_variable = self.stable.getSymbolEntry(value[0])
+        value_variable = value[2]
+        assignment_ast = AssignAst(NameAst(left_variable), NumberAst(value_variable), lineNo=0)
+        return assignment_ast
 
     @_('PRINT ID')
     def print_stmt(self, value):
