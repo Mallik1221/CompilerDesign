@@ -77,14 +77,6 @@ class PrintAst(AST):
 		print("\t\tPrint AST:")
 		print("\t\t\t(",end="")
 		self.nameast.print()
-		# print()
-		# sn=SymbolTable.getSymbolEntry(self.symbolEntry)
-		# sn.print()
-		# symbol_name = name_ast.getSymbolName()
-
-		# name_ast = NameAst(self.symbolEntry)  
-		# symbol_name = name_ast.symbolEntry
-		# print(f"\t\t\tNameAst: '{symbol_name}'")
 
 	def getDataType(self):
 		return None
